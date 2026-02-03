@@ -39,7 +39,7 @@ public class Item {
         return quantity;
     }
 
-    private void setQuantity(Integer quantity) {
+    void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
