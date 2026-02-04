@@ -240,6 +240,9 @@ public class Delivery {
         private BigDecimal courierPayout;
         private Duration expectedDeliveryTime;
 
+        public PreparationDetails() {
+        }
+
         public PreparationDetails(ContactPoint sender, ContactPoint recipient, BigDecimal distanceFee,
                                   BigDecimal courierPayout, Duration expectedDeliveryTime) {
             this.sender = sender;
