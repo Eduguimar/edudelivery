@@ -1,13 +1,22 @@
 package com.devedu.couriermanagement.domain.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+@Entity
 public class AssignedDelivery {
 
+    @Id
     private UUID id;
     private OffsetDateTime assignedAt;
+
+    @ManyToOne(optional = false)
+    private Courier courier;
 
     public AssignedDelivery() {
     }
@@ -28,10 +37,19 @@ public class AssignedDelivery {
         this.assignedAt = assignedAt;
     }
 
-    static AssignedDelivery pending(UUID deliveryId) {
+    private Courier getCourier() {
+        return courier;
+    }
+
+    private void setCourier(Courier courier) {
+        this.courier = courier;
+    }
+
+    static AssignedDelivery pending(UUID deliveryId, Courier courier) {
         AssignedDelivery delivery = new AssignedDelivery();
         delivery.setId(deliveryId);
         delivery.setAssignedAt(OffsetDateTime.now());
+        delivery.setCourier(courier);
 
         return delivery;
     }

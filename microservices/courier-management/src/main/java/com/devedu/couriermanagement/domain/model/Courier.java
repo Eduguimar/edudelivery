@@ -1,16 +1,25 @@
 package com.devedu.couriermanagement.domain.model;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
 import java.time.OffsetDateTime;
 import java.util.*;
 
+@Entity
 public class Courier {
 
+    @Id
     private UUID id;
     private String name;
     private String phone;
     private Integer fulfilledDeliveriesQuantity;
     private Integer pendingDeliveriesQuantity;
     private OffsetDateTime lastFulfilledDeliveryAt;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "courier")
     private List<AssignedDelivery> pendingDeliveries = new ArrayList<>();
 
     public Courier() {
@@ -84,7 +93,7 @@ public class Courier {
     }
 
     public void assign(UUID deliveryId) {
-        this.pendingDeliveries.add(AssignedDelivery.pending(deliveryId));
+        this.pendingDeliveries.add(AssignedDelivery.pending(deliveryId, this));
         this.pendingDeliveriesQuantity++;
     }
 
