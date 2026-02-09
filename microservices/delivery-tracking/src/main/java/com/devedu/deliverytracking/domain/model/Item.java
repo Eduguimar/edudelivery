@@ -1,20 +1,31 @@
 package com.devedu.deliverytracking.domain.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+
 import java.util.Objects;
 import java.util.UUID;
 
+@Entity
 public class Item {
+
+    @Id
     private UUID id;
     private String name;
     private Integer quantity;
 
+    @ManyToOne(optional = false)
+    private Delivery delivery;
+
     Item() {}
 
-    static Item brandNew(String name, Integer quantity) {
+    static Item brandNew(String name, Integer quantity, Delivery delivery) {
         Item item = new Item();
         item.setId(UUID.randomUUID());
         item.setName(name);
         item.setQuantity(quantity);
+        item.setDelivery(delivery);
 
         return item;
     }
@@ -41,6 +52,14 @@ public class Item {
 
     void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    private void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
+
+    private Delivery getDelivery() {
+        return delivery;
     }
 
     @Override

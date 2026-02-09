@@ -1,7 +1,10 @@
 package com.devedu.deliverytracking.domain.model;
 
+import jakarta.persistence.Embeddable;
+
 import java.util.Objects;
 
+@Embeddable
 public class ContactPoint {
     private String zipCode;
     private String street;
@@ -9,6 +12,9 @@ public class ContactPoint {
     private String complement;
     private String name;
     private String phone;
+
+    ContactPoint() {
+    }
 
     public ContactPoint(String zipCode, String street, String number, String complement, String name, String phone) {
         this.zipCode = zipCode;
