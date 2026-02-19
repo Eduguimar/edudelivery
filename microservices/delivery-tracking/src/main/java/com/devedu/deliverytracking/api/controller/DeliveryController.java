@@ -4,8 +4,10 @@ import com.devedu.deliverytracking.api.model.CourierIdInput;
 import com.devedu.deliverytracking.api.model.DeliveryInput;
 import com.devedu.deliverytracking.domain.model.Delivery;
 import com.devedu.deliverytracking.domain.repository.DeliveryRepository;
+import com.devedu.deliverytracking.domain.service.DeliveryCheckpointService;
 import com.devedu.deliverytracking.domain.service.DeliveryPreparationService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
@@ -19,14 +21,12 @@ import java.util.UUID;
 @RequestMapping("api/v1/deliveries")
 public class DeliveryController {
 
-    private final DeliveryPreparationService deliveryService;
-    private final DeliveryRepository deliveryRepository;
-
-    public DeliveryController(DeliveryPreparationService deliveryService, DeliveryRepository deliveryRepository) {
-        this.deliveryService = deliveryService;
-        this.deliveryRepository = deliveryRepository;
-    }
-
+    @Autowired
+    private  DeliveryPreparationService deliveryService;
+    @Autowired
+    private  DeliveryCheckpointService deliveryCheckpointService;
+    @Autowired
+    private  DeliveryRepository deliveryRepository;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -51,16 +51,16 @@ public class DeliveryController {
 
     @PostMapping("/{deliveryId}/placement")
     public void place(@PathVariable UUID deliveryId) {
-
+        deliveryCheckpointService.place(deliveryId);
     }
 
     @PostMapping("/{deliveryId}/pickups")
     public void pickup(@PathVariable UUID deliveryId, @Valid @RequestBody CourierIdInput input) {
-
+        deliveryCheckpointService.pickup(deliveryId, input.getCourierId());
     }
 
     @PostMapping("/{deliveryId}/completion")
     public void complete(@PathVariable UUID deliveryId) {
-
+        deliveryCheckpointService.complete(deliveryId);
     }
 }

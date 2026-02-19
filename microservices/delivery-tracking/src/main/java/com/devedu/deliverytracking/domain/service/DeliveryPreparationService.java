@@ -7,6 +7,7 @@ import com.devedu.deliverytracking.domain.exception.DomainException;
 import com.devedu.deliverytracking.domain.model.ContactPoint;
 import com.devedu.deliverytracking.domain.model.Delivery;
 import com.devedu.deliverytracking.domain.repository.DeliveryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Service
 public class DeliveryPreparationService {
 
+    @Autowired
     private final DeliveryRepository deliveryRepository;
 
     public DeliveryPreparationService(DeliveryRepository deliveryRepository) {
