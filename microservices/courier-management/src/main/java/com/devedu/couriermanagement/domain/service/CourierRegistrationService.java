@@ -1,7 +1,7 @@
 package com.devedu.couriermanagement.domain.service;
 
 import com.devedu.couriermanagement.domain.model.Courier;
-import com.devedu.couriermanagement.domain.model.CourierInput;
+import com.devedu.couriermanagement.api.model.CourierInput;
 import com.devedu.couriermanagement.domain.repository.CourierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

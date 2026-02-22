@@ -1,4 +1,4 @@
-package com.devedu.couriermanagement.domain.model;
+package com.devedu.couriermanagement.api.model;
 
 import jakarta.validation.constraints.NotBlank;
 
