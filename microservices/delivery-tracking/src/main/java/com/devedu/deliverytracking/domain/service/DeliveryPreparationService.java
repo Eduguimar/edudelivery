@@ -12,18 +12,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Duration;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 @Service
 public class DeliveryPreparationService {
 
     @Autowired
-    private final DeliveryRepository deliveryRepository;
-
-    public DeliveryPreparationService(DeliveryRepository deliveryRepository) {
-        this.deliveryRepository = deliveryRepository;
-    }
+    private DeliveryRepository deliveryRepository;
+    @Autowired
+    private DeliveryTimeEstimationService deliveryTimeEstimationService;
+    @Autowired
+    private CourierPayoutCalculationService courierPayoutCalculationService;
 
     @Transactional
     public Delivery draft(DeliveryInput input) {
@@ -52,13 +52,12 @@ public class DeliveryPreparationService {
         ContactPoint recipient = new ContactPoint(inputRecipient.getZipCode(), inputRecipient.getStreet(),
                 inputRecipient.getNumber(), inputRecipient.getComplement(), inputRecipient.getName(), inputRecipient.getPhone());
 
-        Duration expectedDeliveryTime = Duration.ofHours(3);
-        BigDecimal payout = new BigDecimal("10");
-        BigDecimal distanceFee = new BigDecimal("10");
-
+        DeliveryEstimate estimate = deliveryTimeEstimationService.estimate(sender, recipient);
+        BigDecimal calculatedPayout = courierPayoutCalculationService.calculatePayout(estimate.getDistanceInKm());
+        BigDecimal distanceFee = calculateFee(estimate.getDistanceInKm());
 
         Delivery.PreparationDetails preparationDetails = new Delivery.PreparationDetails(
-                sender, recipient, distanceFee, payout, expectedDeliveryTime
+                sender, recipient, distanceFee, calculatedPayout, estimate.getEstimatedTime()
         );
 
         delivery.editPreparationDetails(preparationDetails);
@@ -66,5 +65,9 @@ public class DeliveryPreparationService {
         for (ItemInput itemInput : input.getItems()) {
             delivery.addItem(itemInput.getName(), itemInput.getQuantity());
         }
+    }
+
+    private BigDecimal calculateFee(Double distanceInKm) {
+        return new BigDecimal(3).multiply(new BigDecimal(distanceInKm)).setScale(2, RoundingMode.HALF_EVEN);
     }
 }
