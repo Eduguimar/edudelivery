@@ -37,7 +37,7 @@ public class Courier {
         return name;
     }
 
-    private void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -45,7 +45,7 @@ public class Courier {
         return phone;
     }
 
-    private void setPhone(String phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
