@@ -1,7 +1,11 @@
 package com.devedu.deliverytracking.domain.model;
 
+import com.devedu.deliverytracking.domain.event.DeliveryFulfilledEvent;
+import com.devedu.deliverytracking.domain.event.DeliveryPickUpEvent;
+import com.devedu.deliverytracking.domain.event.DeliveryPlacedEvent;
 import com.devedu.deliverytracking.domain.exception.DomainException;
 import jakarta.persistence.*;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -9,7 +13,7 @@ import java.time.OffsetDateTime;
 import java.util.*;
 
 @Entity
-public class Delivery {
+public class Delivery extends AbstractAggregateRoot<Delivery> {
 
     @Id
     private UUID id;
@@ -212,17 +216,32 @@ public class Delivery {
         verifyIfCanBePlaced();
         this.changeStatusTo(DeliveryStatus.WAITING_FOR_COURIER);
         this.setPlacedAt(OffsetDateTime.now());
+        super.registerEvent(
+                new DeliveryPlacedEvent(
+                        this.getPlacedAt(), this.getId()
+                )
+        );
     }
 
     public void pickup(UUID courierId) {
         this.setCourierId(courierId);
         this.changeStatusTo(DeliveryStatus.IN_TRANSIT);
         this.setAssignedAt(OffsetDateTime.now());
+        super.registerEvent(
+                new DeliveryPickUpEvent(
+                        this.getAssignedAt(), this.getId()
+                )
+        );
     }
 
     public void markAsDelivered() {
         this.changeStatusTo(DeliveryStatus.DELIVERED);
         this.setFulfilledAt(OffsetDateTime.now());
+        super.registerEvent(
+                new DeliveryFulfilledEvent(
+                        this.getFulfilledAt(), this.getId()
+                )
+        );
     }
 
     public void changeItemQuantity(UUID itemId, int quantity) {
